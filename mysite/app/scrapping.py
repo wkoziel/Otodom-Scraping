@@ -51,10 +51,36 @@ def getData():
 	data['Pokoje'] = getRooms()
 	return data
 
+def getIntroTable():
+	offers = data['Tytuł'].count()
+	most_freq = data['Miasto'].value_counts().idxmax()
+	avg_price = data['Cena'].mean()
+	avg_yardage = data['Metraż'].mean()
+	avg_rooms = data['Pokoje'].mean()
+	most_dist = data['Dzielnica'].value_counts().idxmax()
+
+	price_for_m = data['Cena'].sum() / data['Metraż'].sum()
+
+
+	table = f'''<table class="table table-bordered table-striped">
+	<thead><tr><th scope="col">Dane</th><th scope="col">#</th></tr></thead>
+	<tr><td>Ilość zescrapowanych ofert</td><td>{data['Tytuł'].count()}</td></tr>
+	<tr><td>Najczęściej występujące miasto</td><td>{data['Miasto'].value_counts().idxmax()}</td></tr>
+	<tr><td>Najczęściej występująca dzielnica</td><td>{data['Miasto'].value_counts().idxmax()}, {data['Dzielnica'].value_counts().idxmax()}</td></tr>
+	<tr><td>Najtańsza oferta</td><td>{data['Cena'].min()} zł/mc</td></tr>
+	<tr><td>Najdroższa oferta</td><td>{data['Cena'].max()} zł/mc</td></tr>
+	<tr><td>Średnia cena mieszkania</td><td>{round(data['Cena'].mean(), 2)} zł/mc</td></tr>
+	<tr><td>Średnia cena za m²</td><td>{round(data['Cena'].sum() / data['Metraż'].sum(), 2)} zł</td></tr>
+	<tr><td>Średni metraż mieszkania</td><td>{round(data['Metraż'].mean(), 2)} m²</td></tr>
+	<tr><td>Średnia ilość pokoi</td><td>{int(data['Pokoje'].mean())}</td></tr>
+	</table>'''
+	return table
+
 def drawCityDiagram():
 	df = pd.DataFrame(data['Miasto'].value_counts())
 	df.columns = ['Ilosc']
-	fig = px.pie(df, values="Ilosc", names=df.index, height=600, width=800, title="Ilość ofert względem miast w których się znajdują:")
+	df.index.name = 'Miasto'
+	fig = px.pie(df, values="Ilosc", names=df.index, height=600)
 	fig.update_traces(textposition='inside', textinfo='percent+label')
 	plot_div = plot(fig, output_type='div')
 	return plot_div
@@ -92,7 +118,7 @@ def drawYardageDiagram():
 	df = pd.DataFrame.from_dict(D, orient='index')
 	df.index.name = 'Metraż mieszkania w m²'
 	df.columns=['Ilość ofert']
-	fig = px.line(df, x=df.index, y='Ilość ofert', title="Ilość ofert wraz z metrażami:")
+	fig = px.line(df, x=df.index, y='Ilość ofert')
 	fig.update_layout(showlegend=False)
 	plot_div = plot(fig, output_type='div')
 	return plot_div

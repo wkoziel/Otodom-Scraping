@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 
-from .scrapping import drawCityDiagram, drawYardageDiagram, drawRoomDiagram
+from .scrapping import drawCityDiagram, drawYardageDiagram, drawRoomDiagram, getIntroTable
 
 # Create your views here.
 def index(request):
@@ -10,5 +10,6 @@ def index(request):
         'CityDiagram': drawCityDiagram(),
         'YardageDiagram': drawYardageDiagram(),
         'RoomDiagram': drawRoomDiagram(),
+        'IntroTable': getIntroTable(),
     }
     return render(request, "app/index.html", context)
