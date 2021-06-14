@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 
 from requests.models import default_hooks
 
-
 site = requests.get("https://www.otodom.pl/wynajem/mieszkanie/?nrAdsPerPage=72")
 soup = BeautifulSoup(site.content, 'html.parser')
 
@@ -52,13 +51,6 @@ def getData():
 	data['Pokoje'] = getRooms()
 	return data
 
-def getRoomTable():
-	df = pd.DataFrame(data['Pokoje'].value_counts())
-	df.index.name = 'Ilość pokoi'
-	# df.columns.names = ["Ilość ofert"]
-	html = df.to_html()
-	return html
-
 def drawCityDiagram():
 	df = pd.DataFrame(data['Miasto'].value_counts())
 	df.columns = ['Ilosc']
@@ -67,8 +59,7 @@ def drawCityDiagram():
 	plot_div = plot(fig, output_type='div')
 	return plot_div
 
-
-def drawYardageDiagram():
+def getYards():
 	D = dict({
 		'0-20': 0,
 		'20-30': 0,
@@ -93,9 +84,26 @@ def drawYardageDiagram():
 			D['60-70'] += 1
 		elif i >= 70:
 			D['70+'] += 1
-	print(D)
+	return D
 
-	
+
+def drawYardageDiagram():	
+	D = getYards()
+	df = pd.DataFrame.from_dict(D, orient='index')
+	df.index.name = 'Metraż mieszkania w m²'
+	df.columns=['Ilość ofert']
+	fig = px.line(df, x=df.index, y='Ilość ofert', title="Ilość ofert wraz z metrażami:")
+	fig.update_layout(showlegend=False)
+	plot_div = plot(fig, output_type='div')
+	return plot_div
+
+def drawRoomDiagram():
+	df = pd.DataFrame(data['Pokoje'].value_counts())
+	df.columns = ['Ilość ofert']
+	df.index.name = "Ilość pokoi w mieszkaniu"
+	fig = px.bar(df, x=df.index, y='Ilość ofert', text='Ilość ofert', color=['red', 'green', 'blue', 'cyan'])
+	fig.update_layout(showlegend=False)
+	plot_div = plot(fig, output_type='div')
+	return plot_div
 
 data = getData()
-drawYardageDiagram()
