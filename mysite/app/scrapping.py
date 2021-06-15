@@ -52,16 +52,6 @@ def getData():
 	return data
 
 def getIntroTable():
-	offers = data['Tytuł'].count()
-	most_freq = data['Miasto'].value_counts().idxmax()
-	avg_price = data['Cena'].mean()
-	avg_yardage = data['Metraż'].mean()
-	avg_rooms = data['Pokoje'].mean()
-	most_dist = data['Dzielnica'].value_counts().idxmax()
-
-	price_for_m = data['Cena'].sum() / data['Metraż'].sum()
-
-
 	table = f'''<table class="table table-bordered table-striped">
 	<thead><tr><th scope="col">Dane</th><th scope="col">#</th></tr></thead>
 	<tr><td>Ilość zescrapowanych ofert</td><td>{data['Tytuł'].count()}</td></tr>
@@ -72,18 +62,11 @@ def getIntroTable():
 	<tr><td>Średnia cena mieszkania</td><td>{round(data['Cena'].mean(), 2)} zł/mc</td></tr>
 	<tr><td>Średnia cena za m²</td><td>{round(data['Cena'].sum() / data['Metraż'].sum(), 2)} zł</td></tr>
 	<tr><td>Średni metraż mieszkania</td><td>{round(data['Metraż'].mean(), 2)} m²</td></tr>
-	<tr><td>Średnia ilość pokoi</td><td>{int(data['Pokoje'].mean())}</td></tr>
+	<tr><td>Średnia ilość pokoi</td><td>{round(data['Pokoje'].mean(), 0)}</td></tr>
 	</table>'''
 	return table
 
-def drawCityDiagram():
-	df = pd.DataFrame(data['Miasto'].value_counts())
-	df.columns = ['Ilosc']
-	df.index.name = 'Miasto'
-	fig = px.pie(df, values="Ilosc", names=df.index, height=600)
-	fig.update_traces(textposition='inside', textinfo='percent+label')
-	plot_div = plot(fig, output_type='div')
-	return plot_div
+
 
 def getYards():
 	D = dict({
@@ -112,13 +95,22 @@ def getYards():
 			D['70+'] += 1
 	return D
 
-
+def drawCityDiagram():
+	df = pd.DataFrame(data['Miasto'].value_counts())
+	df.columns = ['Ilosc']
+	df.index.name = 'Miasto'
+	fig = px.pie(df, values="Ilosc", names=df.index, height=800)
+	fig.update_traces(textposition='inside', textinfo='percent+label')
+	plot_div = plot(fig, output_type='div')
+	return plot_div
+	
 def drawYardageDiagram():	
 	D = getYards()
 	df = pd.DataFrame.from_dict(D, orient='index')
 	df.index.name = 'Metraż mieszkania w m²'
 	df.columns=['Ilość ofert']
-	fig = px.line(df, x=df.index, y='Ilość ofert')
+	fig = px.line(df, x=df.index, y='Ilość ofert', text='Ilość ofert')
+	fig.update_traces(textposition='top right')
 	fig.update_layout(showlegend=False)
 	plot_div = plot(fig, output_type='div')
 	return plot_div
@@ -127,8 +119,18 @@ def drawRoomDiagram():
 	df = pd.DataFrame(data['Pokoje'].value_counts())
 	df.columns = ['Ilość ofert']
 	df.index.name = "Ilość pokoi w mieszkaniu"
-	fig = px.bar(df, x=df.index, y='Ilość ofert', text='Ilość ofert', color=['red', 'green', 'blue', 'cyan'])
+	fig = px.bar(df, x=df.index, y='Ilość ofert', text='Ilość ofert')
+	fig.update_traces(marker_color='lightblue')
 	fig.update_layout(showlegend=False)
+	plot_div = plot(fig, output_type='div')
+	return plot_div
+
+def drawPriceDiagram():
+	df = data.groupby('Miasto').mean().reset_index()
+	df = df.sort_values(by=['Cena'])
+	fig = px.bar(df, x='Miasto', y='Cena', text='Cena', color='Cena')
+	fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
+	fig.update_layout(showlegend=False,)
 	plot_div = plot(fig, output_type='div')
 	return plot_div
 

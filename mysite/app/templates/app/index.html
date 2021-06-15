@@ -11,47 +11,50 @@
     *  {
         margin: 0;
         padding: 0;
+        text-align: center;
     }
-    body {
-        width: 98vw;
+    .container {
         display: flex;
-        align-items: center;
         flex-direction: column;
-        background-color: #8BC6EC;
-        background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%);
-    }
-    .content{
-        width: 80%;
-    }
-    .intro {
-        display: flex;
         justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        margin-top: 10%;
     }
-    .wrapper {
+    .wrapper{
+        margin: 5% 0;
+    }
+    .wrapper-row{
         display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        background-color: white;
-        border-left: 2px black solid;
-        border-right: 2px black solid;
-        padding: 5% 0;
+        align-content: center;
     }
-    .table-wrapper {
-        width: 50%;
-    }
+    html {
+  font-size: 1rem;
+}
+
+@include media-breakpoint-up(sm) {
+html {
+    font-size: 1.2rem;
+}
+}
+
+@include media-breakpoint-up(md) {
+html {
+    font-size: 1.4rem;
+}
+}
+
+@include media-breakpoint-up(lg) {
+html {
+    font-size: 1.6rem;
+}
+}
 </style>
 <body>
-    <div class="content">
+    <div class="container">
         <div class="wrapper">
             <div class="intro">
                 <h2>Web Scraping z wykorzystaniem Beautiful Soup oraz Django</h2>
                 <h3>Projekt Webowe Biblioteki Programistyczne semestr VI</h3>
                 <h4>Wojciech Kozieł</h4>
-                <br><br>
+                <br>
                 <h5>Dane pobierane są ze strony <a href="https://www.otodom.pl/wynajem/mieszkanie/?nrAdsPerPage=72">Otodom.pl</a></h5>
             </div>
         </div>
@@ -61,17 +64,24 @@
             </div>     
         </div>
         <div class="wrapper">
-            <h4>Zestawienia ilości pokoi wraz z ilością ofert:</h4>
-            {{RoomDiagram|safe}} 
-        </div>
-        <div class="wrapper">
-            <h4>Zestawienia metrażu mieszkań wraz z ilością ofert:</h4>
-            {{YardageDiagram|safe}}
-        </div>
-        <div class="wrapper">
             <h4>Zestawienie procentowej ilości ofert względem miast:</h4>
             {{ CityDiagram|safe }}
         </div>
+        <h4>Porównanie ilości pokoi oraz metrażu do ilości ofert</h4>
+        <div class="wrapper-row">
+
+            <div>
+                {{RoomDiagram|safe}} 
+            </div>  
+            <div>
+                {{YardageDiagram|safe}}
+            </div>
+        </div>
+        <div class="wrapper">
+            <h4>Zestawienie średnich cen mieszkań w miastach</h4>
+            {{PriceDiagram|safe}}
+        </div>
+
     </div>
 </body>
 </html>
