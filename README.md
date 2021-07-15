@@ -10,6 +10,7 @@
 
 
 ## General Information
+- Final project for subject Webowe Biblioteki Programistyczne, sem VI
 - Downloads data from otodom.pl
 - Creates a graph of offers by cities
 - Creates a graph of offers by size
