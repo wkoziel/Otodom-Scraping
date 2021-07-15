@@ -1,4 +1,4 @@
-# Project Name
+# Otodom Analisis - Scraping Application
 > Data scraping application from otodom.pl. The data downloaded from the website is presented using charts and tables.
 
 ## Table of Contents
